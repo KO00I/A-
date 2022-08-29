@@ -1,0 +1,23 @@
+A_Star_Learning
+
+[使い方]
+1.Emptyを用意し、Prefabs内のWallを整数値の座標へセットしてください。
+2.目標地点のオブジェクトに、Targetのタグをセットしてください。
+3.動かしたいオブジェクトに、AStarTestスクリプトをアタッチしてください。
+
+パラメータの内容は以下の通りです
+　Line: Y座標
+  Column: X座標
+  TargetObj: 目標地点のオブジェクト
+  Wall: 壁となるオブジェクトを子に持つEmpty
+　StartButton: 探索開始するためのボタン
+  MaxAttempts: 最大試行回数(これを超えた場合、見つからなかったと判断する)
+　SearchDelayTime: 目標地点を探す速度(一マスの移動にかかる時間)
+  TraceDelayTime: 最短経路をなぞる速度(一マスの移動にかかる時間)
+  MoveDirection: Fore -> 縦横の移動
+  MoveType: Lerp -> すべるように移動
+	    Warp -> 瞬間移動
+
+
+[注意点]
+1.DemoSceneではアスペクト比16:9を想定しています。
