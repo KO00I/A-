@@ -1,9 +1,10 @@
 A_Star_Learning
 
 [使い方]
-1.Emptyを用意し、Prefabs内のWallを整数値の座標へセットしてください。
+1.Prefabs内のWallを整数値の座標へセットしてください。
 2.目標地点のオブジェクトに、Targetのタグをセットしてください。
 3.動かしたいオブジェクトに、AStarTestスクリプトをアタッチしてください。
+4.1をEmptyに入れ、このEmptyをAStarTestスクリプトのWallに入れてください。
 
 パラメータの内容は以下の通りです
 　Line: Y座標
