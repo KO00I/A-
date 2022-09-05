@@ -9,23 +9,23 @@ using UnityEngine.UI;
 namespace AStar_Test
 {
     /// <summary>
-    /// Œ»İ‚Ìƒm[ƒh‚Ìó‘Ô
+    /// ç¾åœ¨ã®ãƒãƒ¼ãƒ‰ã®çŠ¶æ…‹
     /// </summary>
     public enum Status { None, Open, Closed , Wall, Target , Start}
     /// <summary>
-    /// ˆÚ“®ƒRƒXƒg
+    /// ç§»å‹•ã‚³ã‚¹ãƒˆ
     /// </summary>
     public enum Cost { Start = 0, Ground = 1 }
     /// <summary>
-    /// ŒŸ’mEˆÚ“®•ûŒü
+    /// æ¤œçŸ¥ãƒ»ç§»å‹•æ–¹å‘
     /// </summary>
     public enum Direction { r=0, d, l, u, rd, ld, lu, ru }
     /// <summary>
-    /// ˆÚ“®•ûŒü@(’Ç‰Á—\’è)
+    /// ç§»å‹•æ–¹å‘ã€€(è¿½åŠ äºˆå®š)
     /// </summary>
     public enum MoveDirection { Fore = 4 }
     /// <summary>
-    /// ˆÚ“®•û–@@üŒ`•âŠÔ or À•Wƒxƒ^“ü‚ê
+    /// ç§»å‹•æ–¹æ³•ã€€ç·šå½¢è£œé–“ or åº§æ¨™ãƒ™ã‚¿å…¥ã‚Œ
     /// </summary>
     public enum MoveType { Lerp, Warp }
 
@@ -33,14 +33,14 @@ namespace AStar_Test
     {
         public struct Node
         {
-            public int actualCost;          // ÀƒRƒXƒg@ (ˆÚ“®ƒRƒXƒg@‹——£‚âˆÚ“®‚µ‚É‚­‚³‚È‚Ç)
-            public double estimatedCost;    // „’èƒRƒXƒg (–Ú•W‚Ü‚Å‚Ì‹——£)
-            public double score;            // ƒXƒRƒA     (ÀƒRƒXƒg + „’èƒRƒXƒg)
-            public Status status;           // ƒm[ƒh‚Ìó‘Ô
+            public int actualCost;          // å®Ÿã‚³ã‚¹ãƒˆã€€ (ç§»å‹•ã‚³ã‚¹ãƒˆã€€è·é›¢ã‚„ç§»å‹•ã—ã«ãã•ãªã©)
+            public double estimatedCost;    // æ¨å®šã‚³ã‚¹ãƒˆ (ç›®æ¨™ã¾ã§ã®è·é›¢)
+            public double score;            // ã‚¹ã‚³ã‚¢     (å®Ÿã‚³ã‚¹ãƒˆ + æ¨å®šã‚³ã‚¹ãƒˆ)
+            public Status status;           // ãƒãƒ¼ãƒ‰ã®çŠ¶æ…‹
         }
 
         /// <summary>
-        /// üˆÍ8•ûŒü‚ÌPoint‚ğæ“¾
+        /// å‘¨å›²8æ–¹å‘ã®Pointã‚’å–å¾—
         /// </summary>
         /// <param name="vec"></param>
         /// <param name="n"></param>
@@ -79,7 +79,7 @@ namespace AStar_Test
         }
 
         /// <summary>
-        /// Vector3 ‚©‚ç Vector2Int ‚Ö•ÏŠ·
+        /// Vector3 ã‹ã‚‰ Vector2Int ã¸å¤‰æ›
         /// </summary>
         /// <param name="pos"></param>
         /// <returns></returns>
@@ -88,7 +88,7 @@ namespace AStar_Test
         public static Vector2Int ToPoint(int x, int y) => new Vector2Int(x, y);
 
         /// <summary>
-        /// Vector2Int ‚©‚ç Vector3 ‚Ö•ÏŠ·
+        /// Vector2Int ã‹ã‚‰ Vector3 ã¸å¤‰æ›
         /// </summary>
         /// <param name="vec"></param>
         /// <returns></returns>
@@ -103,30 +103,30 @@ namespace AStar_Test
     public class AStarTestManager : MonoBehaviour
     {
         private readonly Dictionary<Vector2Int, Field.Node> _node = new Dictionary<Vector2Int, Field.Node>();
-        private Vector2Int _startPosition, _targetPosition;              // ŠJn’n“_E–Ú•W’n“_
-        private List<Vector2Int> _root = new List<Vector2Int>();         // Å’ZŒo˜H
-        private List<Vector2Int> _branchPoint = new List<Vector2Int>();  // •ªŠò’n“_
-        private double _hashScore = 0;                                   // ƒXƒRƒA(ˆê•Û‘¶)
-        private int _attemptsCount = 0;                                  // s‰ñ”
-        private Status _targetStatus = Status.Target;                    // –Ú•W’n“_‚ÌƒXƒe[ƒ^ƒX
+        private Vector2Int _startPosition, _targetPosition;              // é–‹å§‹åœ°ç‚¹ãƒ»ç›®æ¨™åœ°ç‚¹
+        private List<Vector2Int> _root = new List<Vector2Int>();         // æœ€çŸ­çµŒè·¯
+        private List<Vector2Int> _branchPoint = new List<Vector2Int>();  // åˆ†å²åœ°ç‚¹
+        private double _hashScore = 0;                                   // ã‚¹ã‚³ã‚¢(ä¸€æ™‚ä¿å­˜)
+        private int _attemptsCount = 0;                                  // è©¦è¡Œå›æ•°
+        private Status _targetStatus = Status.Target;                    // ç›®æ¨™åœ°ç‚¹ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 
-        [SerializeField] int line = 8;                      // Y-axis  s
-        [SerializeField] int column = 15;                   // X-axis  —ñ
-        [SerializeField] GameObject _targetObj;             // –Ú•W‚Æ‚È‚éƒIƒuƒWƒFƒNƒg
-        [SerializeField] GameObject _wall;                  // •Ç‚ğqƒIƒuƒWƒFƒNƒg‚É‚Â” 
-        [SerializeField] Button _startButton;               // ŠJnƒ{ƒ^ƒ“@(ƒ{ƒ^ƒ“ƒRƒ“ƒ|[ƒlƒ“ƒg‚Í•ÏX‚µ‚È‚­‚Ä‚æ‚¢)
-        [SerializeField] int _maxAttempts = 100;            // Å‘ås‰ñ”
-        [SerializeField] float _searchDelayTime = .25f;     // Œo˜H’Tõ’†‚Ì’x‰„ŠÔ
-        [SerializeField] float _traceDelayTime = .15f;      // Å’ZŒo˜H’Tõ’†‚Ì’x‰„ŠÔ
+        public int line = 8;                      // Y-axis  è¡Œ
+        public int column = 15;                   // X-axis  åˆ—
+        [SerializeField] GameObject _targetObj;             // ç›®æ¨™ã¨ãªã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+        [SerializeField] GameObject _wall;                  // å£ã‚’å­ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«æŒã¤ç®±
+        [SerializeField] Button _startButton;               // é–‹å§‹ãƒœã‚¿ãƒ³ã€€(ãƒœã‚¿ãƒ³ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã¯å¤‰æ›´ã—ãªãã¦ã‚ˆã„)
+        [SerializeField] int _maxAttempts = 100;            // æœ€å¤§è©¦è¡Œå›æ•°
+        [SerializeField] float _searchDelayTime = .25f;     // çµŒè·¯æ¢ç´¢ä¸­ã®é…å»¶æ™‚é–“
+        [SerializeField] float _traceDelayTime = .15f;      // æœ€çŸ­çµŒè·¯æ¢ç´¢ä¸­ã®é…å»¶æ™‚é–“
         [Space(20)]
-        [SerializeField] MoveDirection _moveDirection;      // ˆÚ“®•ûŒü
-        [SerializeField] MoveType _moveType;                // ˆÚ“®•û–@
+        [SerializeField] MoveDirection _moveDirection;      // ç§»å‹•æ–¹å‘
+        [SerializeField] MoveType _moveType;                // ç§»å‹•æ–¹æ³•
 
         private void Awake() => _startButton.onClick.AddListener(Init);
 
         private void Init()
         {
-            // ƒm[ƒh‰Šú‰»
+            // ãƒãƒ¼ãƒ‰åˆæœŸåŒ–
             for (int x = 0; x <= column; x++)
             {
                 for (int y = 0; y <= line; y++)
@@ -143,7 +143,7 @@ namespace AStar_Test
                 }
             }
 
-            // ŠJn’n“_æ“¾
+            // é–‹å§‹åœ°ç‚¹å–å¾—
             _startPosition = transform.position.ToPoint();
             _node[_startPosition] = new Field.Node()
             {
@@ -151,7 +151,7 @@ namespace AStar_Test
                 status = Status.Start
             };
 
-            // –Ú•W’n“_æ“¾
+            // ç›®æ¨™åœ°ç‚¹å–å¾—
             _targetPosition = _targetObj.transform.position.ToPoint();
             _node[_targetPosition] = new Field.Node()
             {
@@ -159,7 +159,7 @@ namespace AStar_Test
                 status = Status.Target
             };
 
-            // •Çİ’è
+            // å£è¨­å®š
             for (int i = 0; i < _wall.transform.childCount; i++)
             {
                 var pos = _wall.transform.GetChild(i).position.ToPoint();
@@ -170,23 +170,23 @@ namespace AStar_Test
         }
 
         /// <summary>
-        /// üˆÍ‚ÌƒXƒRƒA‚ğ‹‚ß‚é
+        /// å‘¨å›²ã®ã‚¹ã‚³ã‚¢ã‚’æ±‚ã‚ã‚‹
         /// </summary>
         private void Open()
         {
-            // s‰ñ”‚ªÅ‘ås‰ñ”‚ğ’´‚¦‚½ê‡
+            // è©¦è¡Œå›æ•°ãŒæœ€å¤§è©¦è¡Œå›æ•°ã‚’è¶…ãˆãŸå ´åˆ
             if (++_attemptsCount > _maxAttempts)
             {
-                Debug.LogError("Overflow: s‰ñ”‚ªÅ‘ås‰ñ”‚ğ’´‚¦‚Ü‚µ‚½");
+                Debug.LogError("Overflow: è©¦è¡Œå›æ•°ãŒæœ€å¤§è©¦è¡Œå›æ•°ã‚’è¶…ãˆã¾ã—ãŸ");
                 UnityEditor.EditorApplication.isPaused = true;
                 return;
             }
 
                 // debug
-                //print(_attemptsCount + "‰ñ–Ú");
+                //print(_attemptsCount + "å›ç›®");
             var around = new Dictionary<Vector2Int, double>();
 
-            // üˆÍ‚ÌÅ­ƒXƒRƒA‚ğ‹‚ß‚é
+            // å‘¨å›²ã®æœ€å°‘ã‚¹ã‚³ã‚¢ã‚’æ±‚ã‚ã‚‹
             for (var i = 0; i < (int)_moveDirection; i++)
             {
                 Vector2Int pos = transform.position.ToPoint().MovePosition(i);
@@ -195,7 +195,7 @@ namespace AStar_Test
                 else if (_node[pos].status == Status.Closed) continue;
                 else if (_node[pos].status == (_targetStatus == Status.Start ? Status.Target : Status.Start)) continue;
 
-                // ƒ^[ƒQƒbƒg‚ğŒ©‚Â‚¯‚½‚çŒvZI—¹
+                // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’è¦‹ã¤ã‘ãŸã‚‰è¨ˆç®—çµ‚äº†
                 if (_node[pos].status == _targetStatus)
                 {
                     _hashScore = 0;
@@ -203,11 +203,11 @@ namespace AStar_Test
                     return;
                 }
 
-                // „’èƒRƒXƒg@ŒvZ
+                // æ¨å®šã‚³ã‚¹ãƒˆã€€è¨ˆç®—
                 var estimated = Field.ToDistance(_targetPosition, pos);
 
                 var hashStatus = _node[pos].status;
-                // ƒXƒRƒA@ŒvZ
+                // ã‚¹ã‚³ã‚¢ã€€è¨ˆç®—
                 _node[pos] = new Field.Node()
                 {
                     status = hashStatus,
@@ -216,7 +216,7 @@ namespace AStar_Test
                     score = (int)Cost.Ground + _attemptsCount + estimated
                 };
 
-                // ƒXƒRƒA‚ª‚È‚¢(Open‚µ‚Ä‚¢‚È‚¢)ê‡‚Íl—¶‚µ‚È‚¢
+                // ã‚¹ã‚³ã‚¢ãŒãªã„(Openã—ã¦ã„ãªã„)å ´åˆã¯è€ƒæ…®ã—ãªã„
                 if (_node[pos].score <= 0)
                 {
                     continue;
@@ -224,17 +224,17 @@ namespace AStar_Test
                 around.Add(pos,  _node[pos].score);
             }
 
-            // •ªŠò’n“_‚ğ•Û‚µ‚Ä‚¨‚­
+            // åˆ†å²åœ°ç‚¹ã‚’ä¿æŒã—ã¦ãŠã
             if (around.Count > 1)
             {
                 _branchPoint.Add(transform.position.ToPoint());
             }
-            // ‚à‚µˆÚ“®‰Â”\’n“_‚ª‚È‚¯‚ê‚Î•ªŠò’n“_‚É–ß‚é
+            // ã‚‚ã—ç§»å‹•å¯èƒ½åœ°ç‚¹ãŒãªã‘ã‚Œã°åˆ†å²åœ°ç‚¹ã«æˆ»ã‚‹
             else if (around.Count == 0)
             {
                 if(_branchPoint.Count == 0)
                 {
-                    Debug.LogError("Overflow: ’Ê˜H‚ğ”­Œ©‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½");
+                    Debug.LogError("Overflow: é€šè·¯ã‚’ç™ºè¦‹ã™ã‚‹ã“ã¨ãŒã§ãã¾ã›ã‚“ã§ã—ãŸ");
                     UnityEditor.EditorApplication.isPaused = true;
                     return;
                 }
@@ -244,7 +244,7 @@ namespace AStar_Test
                 return;
             }
 
-            // Å¬ƒRƒXƒg‚ÌÀ•W
+            // æœ€å°ã‚³ã‚¹ãƒˆã®åº§æ¨™
             var minCost = around.OrderBy(p => p.Value).First();
             _hashScore = minCost.Value;
 
@@ -252,7 +252,7 @@ namespace AStar_Test
         }
 
         /// <summary>
-        /// ˆÚ“®
+        /// ç§»å‹•
         /// </summary>
         /// <param name="nextPoint"></param>
         /// <param name="targetStatus"></param>
@@ -275,7 +275,7 @@ namespace AStar_Test
         }
 
         /// <summary>
-        /// ’Ê‚Á‚Ä‚«‚½“¹‚ğˆø‚«•Ô‚³‚È‚¢‚½‚ß‚É•Â‚¶‚é
+        /// é€šã£ã¦ããŸé“ã‚’å¼•ãè¿”ã•ãªã„ãŸã‚ã«é–‰ã˜ã‚‹
         /// </summary>
         /// <param name="beforePoint"></param>
         private void Closed(Vector2Int beforePoint)
@@ -286,21 +286,21 @@ namespace AStar_Test
         }
 
         /// <summary>
-        /// ƒS[ƒ‹‚©‚ç‹tZ‚µ‚ÄÅ’Zƒ‹[ƒg‚ğ‹‚ß‚é
+        /// ã‚´ãƒ¼ãƒ«ã‹ã‚‰é€†ç®—ã—ã¦æœ€çŸ­ãƒ«ãƒ¼ãƒˆã‚’æ±‚ã‚ã‚‹
         /// </summary>
         /// <param name="val"></param>
         private void GetMinCostCoordinate()
         {
             var isBreak = false; ;
-            // Å’ZŒo˜H‚ÌŒŸõ
+            // æœ€çŸ­çµŒè·¯ã®æ¤œç´¢
             _root.Add(transform.position.ToPoint());
 
-            // Target‚Ì’n“_‚ğ“o˜^
+            // Targetã®åœ°ç‚¹ã‚’ç™»éŒ²
             var minCost = new KeyValuePair<Vector2Int, double>();
 
             int n = 0;
 
-            // Start‚Ü‚Å‚ÌÅ’ZŒo˜H‚ğŒŸõ
+            // Startã¾ã§ã®æœ€çŸ­çµŒè·¯ã‚’æ¤œç´¢
             do
             {
                 var closed = new Dictionary<Vector2Int, double>();
@@ -315,12 +315,12 @@ namespace AStar_Test
                     }
                     else if (_node[pos].status == Status.Wall) continue;
                     else if (_node[pos].status != Status.Closed || pos == _root[_root.Count - 1]) continue;
-                    // ÀƒRƒXƒg‚ª¬‚³‚¢‚à‚Ì‚ğ’T‚·
+                    // å®Ÿã‚³ã‚¹ãƒˆãŒå°ã•ã„ã‚‚ã®ã‚’æ¢ã™
                     closed.Add(pos, _node[pos].actualCost);
                 }
 
                 if (isBreak) break;
-                // Å¬ÀƒRƒXƒg‚ÌÀ•W
+                // æœ€å°å®Ÿã‚³ã‚¹ãƒˆã®åº§æ¨™
                 minCost = closed.OrderBy(p => p.Value).ThenBy(p => Field.ToDistance(p.Key, _startPosition)).First();
 
                 _root.Add(minCost.Key);
@@ -328,9 +328,9 @@ namespace AStar_Test
 
             _root.Add(_startPosition);
             transform.position = _startPosition.ToPosition();
-            // Å’ZŒo˜H‚ÌŒŸõ@I—¹
+            // æœ€çŸ­çµŒè·¯ã®æ¤œç´¢ã€€çµ‚äº†
 
-            // "ƒ^[ƒQƒbƒg->ƒXƒ^[ƒg" ‚©‚ç "ƒXƒ^[ƒg->ƒ^[ƒQƒbƒg" ‚É’¼‚·
+            // "ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ->ã‚¹ã‚¿ãƒ¼ãƒˆ" ã‹ã‚‰ "ã‚¹ã‚¿ãƒ¼ãƒˆ->ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ" ã«ç›´ã™
             _root.Reverse();
 
             TraceRoot(_root);
@@ -342,7 +342,7 @@ namespace AStar_Test
         }
 
         /// <summary>
-        /// Å’ZŒo˜H‚ğˆÚ“®
+        /// æœ€çŸ­çµŒè·¯ã‚’ç§»å‹•
         /// </summary>
         /// <param name="root"></param>
         /// <returns></returns>
